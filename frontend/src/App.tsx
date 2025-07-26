@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage'; // 1. Import the new page
+import RegisterPage from './pages/RegisterPage'; 
 
 function App() {
   return (
