@@ -1,33 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api'; 
+import { useAppContext } from '../context/AppContext'; // Corrected import
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { login } = useAppContext(); // Corrected hook name
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevents the page from reloading on submit
-    setError(''); // Clear previous errors
+    event.preventDefault();
+    setError('');
 
     try {
-
-      const response = await api.post('/auth/login', {
-        email,
-        password,
-      });
-
-
-      console.log('Login successful!', response.data);
-    
+      // MOCK SUCCESSFUL LOGIN
+      console.log('Simulating successful login...');
+      const mockUser = { name: email.split('@')[0] || 'Test User' }; // Use part of email as name
+      login(mockUser); 
+      
+      navigate('/dashboard');
 
     } catch (err: any) {
-
-      console.error('Login failed:', err.response?.data?.message || 'An error occurred');
-      setError(err.response?.data?.message || 'Invalid email or password.');
+      setError('Invalid email or password.');
     }
   };
 
@@ -37,11 +33,9 @@ const LoginPage: React.FC = () => {
         <h2 className="form-title">Welcome Back!</h2>
         <p className="form-subtitle">Please sign in to continue to PathPal.</p>
         
-        {/* Step 2.5: Connect the handleSubmit function to the form's onSubmit event */}
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="email">Email Address</label>
-            {/* Step 1.5: Link input to state and update it on change */}
             <input 
               type="email" 
               id="email" 
@@ -64,7 +58,6 @@ const LoginPage: React.FC = () => {
             />
           </div>
 
-          {/* Conditionally render the error message if it exists */}
           {error && <p style={{ color: '#ff4d4d', textAlign: 'center', marginBottom: '1rem' }}>{error}</p>}
           
           <button type="submit" className="home-button button-primary form-button">
