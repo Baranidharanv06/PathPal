@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import toast from 'react-hot-toast'; // 1. Import the toast function
+import toast from 'react-hot-toast'; 
 
 const PoolDetailsPage: React.FC = () => {
   const { poolId } = useParams<{ poolId: string }>();
@@ -9,10 +9,9 @@ const PoolDetailsPage: React.FC = () => {
 
   const pool = pools.find(p => p.id === Number(poolId));
 
-  // 2. This function creates the toast notification
+
   const handleRequestJoin = () => {
-    // In a real app, this would make an API call.
-    // For now, we just show a notification.
+
     toast.success(`Request sent to join the pool to ${pool?.destination}!`);
   };
 

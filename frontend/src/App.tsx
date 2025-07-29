@@ -8,31 +8,29 @@ import CreatePoolPage from './pages/CreatePoolPage';
 import SharedLayout from './components/SharedLayout';
 import ProfilePage from './pages/ProfilePage';
 import PoolDetailsPage from './pages/PoolDetailsPage';
+import MyPoolsPage from './pages/MyPoolsPage';
+import HistoryPage from './pages/HistoryPage';
+import SettingsPage from './pages/SettingsPage';
+import NotificationsPage from './pages/NotificationsPage'; // 1. Import the NotificationsPage
 
-/**
- * App is the root component that sets up all the application's routes.
- * It distinguishes between public routes (like login) and protected routes
- * that require authentication.
- */
 function App() {
   return (
     <Routes>
-      {/* Public Routes: Accessible to everyone */}
+      {/* Public Routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* Protected Routes: 
-        These routes are wrapped in a <ProtectedRoute /> component.
-        If the user is not authenticated, they will be redirected to the /login page.
-        The <SharedLayout /> provides a consistent Navbar for all protected pages.
-      */}
+      {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route element={<SharedLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/my-pools" element={<MyPoolsPage />} />
           <Route path="/create-pool" element={<CreatePoolPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} /> {/* 2. Add the route here */}
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          {/* This is a dynamic route. ':poolId' is a URL parameter. */}
           <Route path="/pool/:poolId" element={<PoolDetailsPage />} />
         </Route>
       </Route>

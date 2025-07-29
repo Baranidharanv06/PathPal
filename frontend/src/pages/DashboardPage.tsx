@@ -1,17 +1,14 @@
-import React, { useState, useMemo } from 'react'; // 1. Import useState and useMemo
+import React, { useState, useMemo } from 'react'; 
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import PoolCard from '../components/PoolCard';
 
 const DashboardPage: React.FC = () => {
   const { pools } = useAppContext();
-  const [searchTerm, setSearchTerm] = useState(''); // 2. Add state for the search term
-
-  // 3. Filter the pools based on the search term
-  // useMemo ensures this calculation only re-runs when pools or searchTerm change
+  const [searchTerm, setSearchTerm] = useState(''); 
   const filteredPools = useMemo(() => {
     if (!searchTerm) {
-      return pools; // If search is empty, return all pools
+      return pools;
     }
     return pools.filter(pool =>
       pool.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -23,7 +20,6 @@ const DashboardPage: React.FC = () => {
     <div className="page-container">
       <div className="section-header">
         <h2 className="section-title">Available Ride Pools</h2>
-        {/* 4. Add the search input field */}
         <div className="search-bar">
           <input
             type="text"
@@ -34,7 +30,7 @@ const DashboardPage: React.FC = () => {
         </div>
       </div>
       
-      {/* 5. Render the filtered list */}
+
       <div className="pool-list">
         {filteredPools.length > 0 ? (
           filteredPools.map(pool => (

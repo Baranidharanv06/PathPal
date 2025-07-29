@@ -5,8 +5,7 @@ import api from '../services/api';
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // State for the form fields
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState(''); // Changed from name to username
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,16 +15,14 @@ const RegisterPage: React.FC = () => {
     setError('');
 
     try {
-      // Call the backend registration endpoint
+      // The backend will need to accept 'username' instead of 'name'
       const response = await api.post('/auth/register', {
-        name,
+        username,
         email,
         password,
       });
 
       console.log('Registration successful!', response.data);
-
-      // On success, automatically navigate to the login page
       navigate('/login');
 
     } catch (err: any) {
@@ -41,14 +38,15 @@ const RegisterPage: React.FC = () => {
         <p className="form-subtitle">Join PathPal to start sharing rides.</p>
         
         <form onSubmit={handleSubmit}>
+          {/* Changed from "Full Name" to "Username" */}
           <div className="input-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="username">Username</label>
             <input 
               type="text" 
-              id="name" 
-              placeholder="Your Name" 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              id="username" 
+              placeholder="Choose a unique username" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>

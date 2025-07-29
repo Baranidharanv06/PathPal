@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext'; // Corrected import
+import { useAppContext } from '../context/AppContext';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAppContext(); // Corrected hook name
+  const { login } = useAppContext();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,9 +15,9 @@ const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      // MOCK SUCCESSFUL LOGIN
+      // MOCK SUCCESSFUL LOGIN as a user who has posted a pool
       console.log('Simulating successful login...');
-      const mockUser = { name: email.split('@')[0] || 'Test User' }; // Use part of email as name
+      const mockUser = { username: 'Mohit' }; // Log in as Mohit
       login(mockUser); 
       
       navigate('/dashboard');

@@ -1,16 +1,25 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import { Toaster } from 'react-hot-toast'; // 1. Import
+import Sidebar from './Sidebar'; // Import Sidebar instead of Navbar
+import { Toaster } from 'react-hot-toast';
 
 const SharedLayout: React.FC = () => {
   return (
-    <div>
-      <Navbar />
-      <main>
-        {/* The Outlet component renders the current page (e.g., Dashboard, Create Pool) */}
+    <div className="app-layout">
+      <Sidebar />
+      <div className="main-content">
+        <Toaster 
+          position="top-center"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 };
