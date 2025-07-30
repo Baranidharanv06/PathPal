@@ -2,8 +2,8 @@ import express from 'express';
 import { Request,Response } from 'express';
 import cors from 'cors';
 
-import authroutes from './routes/authroots';
-import poolroutes from './routes/poolroots';
+import authroutes from './routes/authroutes';
+import poolroutes from './routes/poolroutes';
 
 const app = express();
 

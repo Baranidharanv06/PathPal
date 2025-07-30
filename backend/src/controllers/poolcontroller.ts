@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { supabase } from "../client/supabase";
 import { Authentication} from "../middleware/authmiddlware";
+import * as supabaseService from '../services/supabaseService';
 
 export const create_pool = async (req: Authentication, res: Response ) => {
 
@@ -28,11 +29,13 @@ if (typeof seats !== 'number' || !Number.isInteger(seats) || seats < 1 || seats 
 
 const email = req.user?.email;
 
-if (typeof email !== 'string' || email.length > 0) {
+console.log(email);
+
+if (typeof email !== 'string') {
   return res.status(402).json({message: 'invalid email.'})
 }
 
-console.log(email);
+
 
 const {data: userfetch, error: fetcherror} = await supabase
 .from('profiles')
@@ -70,32 +73,74 @@ if (inserterror) {
 
 export const fetchAllAvailablePools = async (req: Request, res: Response) => {
   try {
-    // 1. Query the 'pools' table in your Supabase database.
-    // We want to select all columns (*) from the table.
-    // We also join with the 'profiles' table to get the driver's name.
     const { data, error } = await supabase
       .from('pools')
       .select(`
         *
       `)
-      // 2. Filter the results to only include pools that are 'scheduled'.
-      // This prevents completed or cancelled rides from showing up in the search.
       .eq('status', 'scheduled');
 
-    // 3. Handle any errors that occur during the database query.
     if (error) {
       console.error('Error fetching pools:', error.message);
-      // Throw the error to be caught by the catch block.
       throw error;
     }
-
-    // 4. If the query is successful, send the data back to the client
-    // with a 200 OK status. The data will be an array of pool objects.
     res.status(200).json(data);
 
   } catch (error) {
-    // 5. If any error occurs in the try block, send a generic
-    // 500 Internal Server Error response.
     res.status(500).json({ message: 'Error fetching available pools' });
   }
 };
+
+export const requestToJoinPool = async (req: Authentication, res: Response) => {
+    // The passenger's ID comes directly from the authMiddleware after a user logs in.
+    // This is more secure and efficient than looking it up by email.
+
+    const Passengeremail = req.user?.email;
+
+    // It's good practice to ensure the PassengerId from the token is valid.
+    if (!Passengeremail) {
+        return res.status(401).json({ message: 'Authentication error: User Email not found.' });
+    }
+
+    try {
+
+    const {data: pasid,error:iderror}= await supabase
+    .from('profiles')
+    .select('id')
+    .eq('email',Passengeremail)
+    .single()
+
+    const PassengerId=pasid?.id;
+
+    // The pool's ID comes from the URL parameter.
+    const { poolId } = req.params;
+
+        // All the complex logic is now handled in the service layer.
+        // The controller's only job is to manage the request and response.
+        const newRequest = await supabaseService.createPoolJoinRequestInDb(
+            parseInt(poolId, 10),
+            PassengerId
+        );
+
+        // If the service layer is successful, send one successful response.
+        return res.status(201).json({ message: 'Request to join pool sent successfully.', request: newRequest });
+
+    } catch (error: any) {
+        // Handle specific error for duplicate requests (violates UNIQUE constraint)
+        if (error.code === '23505') { // PostgreSQL unique violation error code
+            return res.status(409).json({ message: 'You have already sent a request to join this pool.' });
+        }
+        
+        // Handle other known errors that might be thrown from the service
+        if (error.message.includes('Pool not found')) {
+            return res.status(404).json({ message: 'The requested pool does not exist.' });
+        }
+
+        // Handle all other potential errors
+        console.error('Error requesting to join pool:', error);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
+    }
+};
+
+
+

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 export interface Authentication extends Request {
-  user?: { userId: string; email?: string; };
+  user?: { userId: string; email?: string; sub:string };
   userEmail?: string;
 }
 
@@ -25,7 +25,7 @@ export const authenticator = (req: Request, res: Response, next: NextFunction): 
   }
   
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { userId: string; email?: string };
+    const payload = jwt.verify(token, JWT_SECRET) as { userId: string; email?: string; sub:string};
     (req as Authentication).user = payload;
     (req as Authentication).userEmail = payload.email;
     next();
