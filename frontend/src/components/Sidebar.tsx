@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import logo from '../assets/logo.png';
