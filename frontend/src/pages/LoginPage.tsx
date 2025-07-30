@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { authAPI } from '../services/api';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, setTransitioning } = useAppContext(); // Get setTransitioning
+  const { login, setTransitioning } = useAppContext();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    // Start the transition
-    setTransitioning(true);
-
-    // Wait for the fade-in animation to complete before navigating
-    setTimeout(() => {
-      // MOCK SUCCESSFUL LOGIN
-      const mockUser = { username: 'Mohit' };
-      login(mockUser); 
-      navigate('/dashboard');
-    }, 500); // 500ms delay
+    try {
+      setTransitioning(true);
+      
+      const response = await authAPI.login(email, password);
+      
+      // Store the token and user data
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      
+      login(response.user);
+      
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 500);
+      
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setTransitioning(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,8 +73,8 @@ const LoginPage: React.FC = () => {
 
           {error && <p style={{ color: '#ff4d4d', textAlign: 'center', marginBottom: '1rem' }}>{error}</p>}
           
-          <button type="submit" className="home-button button-primary form-button">
-            Sign In
+          <button type="submit" className="home-button button-primary form-button" disabled={isLoading}>
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 

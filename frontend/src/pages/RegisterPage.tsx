@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import { authAPI } from '../services/api';
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState(''); // Changed from name to username
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
+    setIsLoading(true);
 
     try {
-      // The backend will need to accept 'username' instead of 'name'
-      const response = await api.post('/auth/register', {
-        username,
-        email,
-        password,
-      });
+      const response = await authAPI.register(email, password, username);
 
-      console.log('Registration successful!', response.data);
+      console.log('Registration successful!', response);
       navigate('/login');
 
     } catch (err: any) {
       console.error('Registration failed:', err.response?.data?.message || 'An error occurred');
       setError(err.response?.data?.message || 'Could not create account.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,8 +76,8 @@ const RegisterPage: React.FC = () => {
 
           {error && <p style={{ color: '#ff4d4d', textAlign: 'center', marginBottom: '1rem' }}>{error}</p>}
           
-          <button type="submit" className="home-button button-primary form-button">
-            Sign Up
+          <button type="submit" className="home-button button-primary form-button" disabled={isLoading}>
+            {isLoading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
