@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext'; // Corrected import
+import { useAppContext } from '../context/AppContext';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAppContext(); // Corrected hook name
+  const { login, setTransitioning } = useAppContext(); // Get setTransitioning
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,17 +14,16 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
     setError('');
 
-    try {
-      // MOCK SUCCESSFUL LOGIN
-      console.log('Simulating successful login...');
-      const mockUser = { name: email.split('@')[0] || 'Test User' }; // Use part of email as name
-      login(mockUser); 
-      
-      navigate('/dashboard');
+    // Start the transition
+    setTransitioning(true);
 
-    } catch (err: any) {
-      setError('Invalid email or password.');
-    }
+    // Wait for the fade-in animation to complete before navigating
+    setTimeout(() => {
+      // MOCK SUCCESSFUL LOGIN
+      const mockUser = { username: 'Mohit' };
+      login(mockUser); 
+      navigate('/dashboard');
+    }, 500); // 500ms delay
   };
 
   return (

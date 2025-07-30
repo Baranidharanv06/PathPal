@@ -8,36 +8,45 @@ import CreatePoolPage from './pages/CreatePoolPage';
 import SharedLayout from './components/SharedLayout';
 import ProfilePage from './pages/ProfilePage';
 import PoolDetailsPage from './pages/PoolDetailsPage';
+import MyPoolsPage from './pages/MyPoolsPage';
+import HistoryPage from './pages/HistoryPage';
+import SettingsPage from './pages/SettingsPage';
+import NotificationsPage from './pages/NotificationsPage';
+import BookTaxiPage from './pages/BookTaxiPage'; // Import new page
+import TransitionOverlay from './components/TransitionOverlay';
+import { useAppContext } from './context/AppContext';
 
-/**
- * App is the root component that sets up all the application's routes.
- * It distinguishes between public routes (like login) and protected routes
- * that require authentication.
- */
-function App() {
+function AppContent() {
+  const { isTransitioning } = useAppContext();
+  
   return (
-    <Routes>
-      {/* Public Routes: Accessible to everyone */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+    <>
+      <TransitionOverlay isTransitioning={isTransitioning} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-      {/* Protected Routes: 
-        These routes are wrapped in a <ProtectedRoute /> component.
-        If the user is not authenticated, they will be redirected to the /login page.
-        The <SharedLayout /> provides a consistent Navbar for all protected pages.
-      */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<SharedLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/create-pool" element={<CreatePoolPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          {/* This is a dynamic route. ':poolId' is a URL parameter. */}
-          <Route path="/pool/:poolId" element={<PoolDetailsPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<SharedLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/my-pools" element={<MyPoolsPage />} />
+            <Route path="/create-pool" element={<CreatePoolPage />} />
+            <Route path="/book-taxi" element={<BookTaxiPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/pool/:poolId" element={<PoolDetailsPage />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
+}
+
+function App() {
+  return <AppContent />;
 }
 
 export default App;
