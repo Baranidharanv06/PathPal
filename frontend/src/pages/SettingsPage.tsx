@@ -5,9 +5,10 @@ import toast from 'react-hot-toast';
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleSaveChanges = (e: React.FormEvent) => {
+  const handleChangePassword = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Settings saved successfully!");
+    // In a real app, you'd add validation and an API call here
+    toast.success("Password changed successfully!");
   };
 
   return (
@@ -15,14 +16,31 @@ const SettingsPage: React.FC = () => {
       <h1 className="page-title">Settings & Privacy</h1>
       
       <div className="settings-grid">
-        {/* Account Section - Simplified */}
+        {/* Account Section */}
         <div className="settings-section">
           <h3 className="section-title">Account</h3>
-          <p className="section-description">Manage your profile information.</p>
+          <p className="section-description">Manage your profile and account security.</p>
           <div className="settings-item" onClick={() => navigate('/profile')}>
             <span>Edit Profile Information</span>
             <span className="settings-arrow">&rarr;</span>
           </div>
+        </div>
+
+        {/* Change Password Section */}
+        <div className="settings-section">
+          <h3 className="section-title">Change Password</h3>
+          <p className="section-description">Choose a strong password and don't reuse it for other accounts.</p>
+          <form onSubmit={handleChangePassword}>
+            <div className="input-group">
+              <label htmlFor="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" placeholder="••••••••" required />
+            </div>
+            <div className="input-group">
+              <label htmlFor="newPassword">New Password</label>
+              <input type="password" id="newPassword" placeholder="••••••••" required />
+            </div>
+            <button type="submit" className="home-button button-primary" style={{width: '100%'}}>Update Password</button>
+          </form>
         </div>
 
         {/* Notifications Section */}
@@ -36,7 +54,7 @@ const SettingsPage: React.FC = () => {
               <span className="slider round"></span>
             </label>
           </div>
-          <div className="toggle-group">
+           <div className="toggle-group">
             <label>Updates on Joined Pools</label>
             <label className="switch">
               <input type="checkbox" defaultChecked />
@@ -45,18 +63,18 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Privacy Section */}
+        {/* Privacy & Sharing Section */}
         <div className="settings-section">
           <h3 className="section-title">Privacy & Sharing</h3>
           <p className="section-description">Control what information others see.</p>
-          <div className="toggle-group">
+           <div className="toggle-group">
             <label>Show my trip history</label>
             <label className="switch">
               <input type="checkbox" defaultChecked />
               <span className="slider round"></span>
             </label>
           </div>
-          <div className="toggle-group">
+           <div className="toggle-group">
             <label>Allow others to see my major</label>
             <label className="switch">
               <input type="checkbox" />

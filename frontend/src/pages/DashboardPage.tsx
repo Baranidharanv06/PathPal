@@ -1,15 +1,19 @@
-import React, { useState, useMemo } from 'react'; 
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import PoolCard from '../components/PoolCard';
 
 const DashboardPage: React.FC = () => {
-  const { pools } = useAppContext();
-  const [searchTerm, setSearchTerm] = useState(''); 
+  const { pools, setTransitioning } = useAppContext();
+  const [searchTerm, setSearchTerm] = useState('');
+
+
+  useEffect(() => {
+    setTransitioning(false);
+  }, [setTransitioning]);
+
   const filteredPools = useMemo(() => {
-    if (!searchTerm) {
-      return pools;
-    }
+    if (!searchTerm) return pools;
     return pools.filter(pool =>
       pool.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pool.origin.toLowerCase().includes(searchTerm.toLowerCase())
@@ -30,7 +34,6 @@ const DashboardPage: React.FC = () => {
         </div>
       </div>
       
-
       <div className="pool-list">
         {filteredPools.length > 0 ? (
           filteredPools.map(pool => (

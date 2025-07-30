@@ -11,31 +11,42 @@ import PoolDetailsPage from './pages/PoolDetailsPage';
 import MyPoolsPage from './pages/MyPoolsPage';
 import HistoryPage from './pages/HistoryPage';
 import SettingsPage from './pages/SettingsPage';
-import NotificationsPage from './pages/NotificationsPage'; // 1. Import the NotificationsPage
+import NotificationsPage from './pages/NotificationsPage';
+import BookTaxiPage from './pages/BookTaxiPage'; // Import new page
+import TransitionOverlay from './components/TransitionOverlay';
+import { useAppContext } from './context/AppContext';
+
+function AppContent() {
+  const { isTransitioning } = useAppContext();
+  
+  return (
+    <>
+      <TransitionOverlay isTransitioning={isTransitioning} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<SharedLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/my-pools" element={<MyPoolsPage />} />
+            <Route path="/create-pool" element={<CreatePoolPage />} />
+            <Route path="/book-taxi" element={<BookTaxiPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/pool/:poolId" element={<PoolDetailsPage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </>
+  );
+}
 
 function App() {
-  return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-
-      {/* Protected Routes */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<SharedLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/my-pools" element={<MyPoolsPage />} />
-          <Route path="/create-pool" element={<CreatePoolPage />} />
-          <Route path="/notifications" element={<NotificationsPage />} /> {/* 2. Add the route here */}
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/pool/:poolId" element={<PoolDetailsPage />} />
-        </Route>
-      </Route>
-    </Routes>
-  );
+  return <AppContent />;
 }
 
 export default App;

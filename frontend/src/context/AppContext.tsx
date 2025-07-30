@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// --- Define the data structures ---
-type TransportMode = 'car' | 'train' | 'flight'; // 'export' has been removed.
+export type TransportMode = 'car' | 'train' | 'flight';
 
 interface User {
   username: string;
@@ -25,6 +24,9 @@ interface AppContextType {
   pools: Pool[];
   isLoading: boolean;
   addPool: (poolData: Omit<Pool, 'id' | 'postedBy'>) => void;
+  // New properties for transition
+  isTransitioning: boolean;
+  setTransitioning: (isTransitioning: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -39,6 +41,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [pools, setPools] = useState<Pool[]>(mockPools);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTransitioning, setTransitioning] = useState(false); // New state
 
   const login = (userData: User) => setUser(userData);
   const logout = () => setUser(null);
@@ -55,7 +58,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AppContext.Provider value={{ user, login, logout, isAuthenticated, pools, isLoading, addPool }}>
+    <AppContext.Provider value={{ user, login, logout, isAuthenticated, pools, isLoading, addPool, isTransitioning, setTransitioning }}>
       {children}
     </AppContext.Provider>
   );
